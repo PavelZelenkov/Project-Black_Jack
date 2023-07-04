@@ -21,14 +21,15 @@ class Main
     @diler_balance = 100
     @bank_balance = 0
 
+    puts 'Нажмите Enter для начала игры'
+    gets
+
     loop do
       enter_game
     end
   end
 
   def enter_game
-    puts 'Нажмите Enter для начала игры'
-    gets
 
     bank_balance_sheet
     puts 'Ставка 10$'
@@ -164,7 +165,6 @@ class Main
     puts "Сумма дилера: #{@diler.sum_card}"
     puts # для удобства чтения
     scoring
-    enter_game
   end
 
   def scoring
@@ -179,7 +179,7 @@ class Main
       @user_balance += 10
       @diler_balance += 10
       @bank_balance -= 20
-      enter_game
+      restart
     # rubocop:disable Lint/DuplicateBranch
     elsif @user.sum_card.to_i > 21 && @diler.sum_card.to_i > 21
       # rubocop:enable Lint/DuplicateBranch
@@ -187,7 +187,7 @@ class Main
       @user_balance += 10
       @diler_balance += 10
       @bank_balance -= 20
-      enter_game
+      restart
     end
   end
 
@@ -197,14 +197,14 @@ class Main
       puts 'Победа дилера'
       @diler_balance += 20
       @bank_balance -= 20
-      enter_game
+      restart
     # rubocop:disable Lint/DuplicateBranch
     elsif @diler.sum_card.to_i < 22 && @user.sum_card.to_i > 21
       # rubocop:enable Lint/DuplicateBranch
       puts 'Победа дилера'
       @diler_balance += 20
       @bank_balance -= 20
-      enter_game
+      restart
     end
   end
 
@@ -213,17 +213,30 @@ class Main
       puts 'Победа игрока'
       @user_balance += 20
       @bank_balance -= 20
-      enter_game
+      restart
     # rubocop:disable Lint/DuplicateBranch
     elsif @user.sum_card.to_i < 22 && @diler.sum_card.to_i > 21
       # rubocop:enable Lint/DuplicateBranch
       puts 'Победа игрока'
       @user_balance += 20
       @bank_balance -= 20
-      enter_game
+      restart
     end
   end
   # rubocop:enable Metrics/AbcSize
+
+  def restart
+    puts 'Нажмите "Enter", если хотите сыграть ещё раз'
+    puts 'Если нет, нажмите "0"'
+    menu = gets.strip
+    
+    case menu
+    when ''
+      enter_game
+    when '0'
+      exit
+    end
+  end
 
   def bank_balance_sheet
     if @user_balance.zero?
